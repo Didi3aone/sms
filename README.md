@@ -1,1 +1,2 @@
-# sms
+# mssb
+MANAGEMENT SYSTEM SMS BROADCAST
