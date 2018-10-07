@@ -62,7 +62,7 @@
         //default values.
         (isset($params["select"])) ? $select = $params["select"] : $select = "*";
         // (isset($params["status"])) ? $status = $params["status"] : $status = STATUS_ACTIVE;
-        (isset($params["order_by"]) && $params["order_by"] != null) ? $orderBy = $params["order_by"] : $orderBy = array($this->_pk_field => "asc");
+        (isset($params["order_by"]) && $params["order_by"] != null) ? $orderBy = $params["order_by"] : "";
         (isset($params["find_by_pk"])) ? $findByPK = $params["find_by_pk"]: $findByPK = array();
         (isset($params["limit"])) ? $limit = $params["limit"] : $limit = 0;
         (isset($params["start"])) ? $start = $params["start"] : $start = 0;
@@ -122,9 +122,9 @@
         }
 
         //for ordering.
-        foreach ($orderBy as $column => $order) {
-            $this->db->order_by($column, $order);
-        }
+        // foreach ($orderBy as $column => $order) {
+        //     $this->db->order_by($column, $order);
+        // }
 
         //for join table.
         if ($joined != null) {

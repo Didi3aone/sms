@@ -7,8 +7,8 @@
     $last_login_time  = isset($item["user_login_time"]) ? $item["user_login_time"] : "";
     $created_date     = isset($item["user_created_date"]) ? $item["user_created_date"] : "";
     $updated_date     = isset($item["user_updated_date"]) ? $item["user_updated_date"] : "";
-    $admin_type        = isset($item["admin_type"]) ? $item["admin_type"] : "";
-
+    $role_id          = isset($item["user_role_id"]) ? $item["user_role_id"] : "";
+    $role_name        = isset($item["RoleName"]) ? $item["RoleName"] : "";
     $btn_msg = ($user_id == 0) ? "Create" : " Update";
     $title_msg = ($user_id == 0) ? "Create" : " Update";
 ?>
@@ -75,6 +75,28 @@
                                             <input type="text" name="email" value="<?= $email ?>" placeholder="Email">
                                         </label>
                                     </section>
+
+                                    <section class="col col-6">
+                                        <label class="label">User Role <sup class="color-red">*</sup></label>
+                                        <label class="select">
+                                            <select name="admin_type">
+                                                <option value="0"> --Choose--</option>
+                                                <?php 
+                                                    if($role_id != "") {
+                                                        echo "<option value=".$role_id." selected>".$role_name."</option>";
+                                                        foreach($role as $key => $value) {
+                                                            echo "<option value=".$value['RoleId']."> ".$value['RoleName']."</option>";
+                                                        } 
+                                                    } else {
+                                                        foreach($role as $key => $value) {
+                                                            echo "<option value=".$value['RoleId']."> ".$value['RoleName']."</option>";
+                                                        } 
+                                                    }
+                                                ?>
+                                            </select>
+                                        </label>
+                                    </section>
+
                                     <?php if($user_id == 0): ?>
                                     <section class="col col-6">
                                         <label class="label">Password <sup class="color-red">*</sup></label>

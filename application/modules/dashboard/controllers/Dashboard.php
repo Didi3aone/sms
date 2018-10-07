@@ -85,6 +85,84 @@ class Dashboard extends MX_Controller  {
         $this->load->view(MANAGER_FOOTER, $footer);
     }
 
+    public function counts_all()
+    {
+        $this->load->model('Dynamic_model');
+        $notif_inbox  = $this->Dynamic_model->set_model("inbox","in","ID")->get_all_data(
+            array(
+                "status"            => -1,
+                "count_all_first"   => true,
+                "conditions"        => array("IsRead" => 0),
+                "debug"             => false,
+                "orderby"           => array("ID" => "desc")
+            )
+        );
+
+        $sess = $this->session->userdata("user_id");
+        $notif = $this->Dynamic_model->set_model("tbl_chat","tc","ChatId")->get_all_data(
+            array(
+                "status"            => -1,
+                "count_all_first"   => true,
+                "conditions"        => array("ChatToId" => $sess, "ChatIsRead" => STATUS_UNREAD),
+                "debug"             => false,
+                "orderby"           => array("ChatId" => "desc")
+            )
+        );
+
+        $total = ($notif_inbox['total']) + ($notif['total']);
+        $total = ($total) ? $total : 0;
+        // echo '
+        // <audio controls autoplay>
+        //   <source src="horse.ogg" type="audio/ogg">
+        //   <source src="'.base_url("assets/sound/voice_on.mp3").'" type="audio/mpeg">
+        //   Your browser does not support the audio element.
+        // </audio>'; 
+
+        $this->output->set_content_type('application/json');
+        echo json_encode($total);
+        exit;
+    }
+
+    public function count_notif()
+    {
+        $this->load->model('Dynamic_model');
+        $sess = $this->session->userdata("user_id");
+        $notif = $this->Dynamic_model->set_model("tbl_chat","tc","ChatId")->get_all_data(
+            array(
+                "status"            => -1,
+                "count_all_first"   => true,
+                "conditions"     => array("ChatToId" => $sess,"ChatIsRead" => STATUS_UNREAD),
+                "debug"              => false,
+                "orderby"            => array("ChatId" => "desc")
+            )
+        );
+
+        $total = $notif['total'];
+
+        $this->output->set_content_type('application/json');
+        echo json_encode($total);
+        exit;
+    }
+
+    public function count_sms()
+    {
+        $this->load->model('Dynamic_model');
+        $notif_inbox  = $this->Dynamic_model->set_model("inbox","in","ID")->get_all_data(
+            array(
+                "status"            => -1,
+                "count_all_first"   => true,
+                "conditions"        => array("IsRead" => 0),
+                "debug"             => false,
+                "orderby"           => array("ID" => "desc")
+            )
+        );
+
+        $total = $notif_inbox['total'];
+
+        $this->output->set_content_type('application/json');
+        echo json_encode($total);
+        exit;
+    }
     public function notif ()
     {
         $this->load->view('dashboard/notifikasi');

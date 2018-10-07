@@ -1,6 +1,6 @@
 <?php
-	$group_id = isset($data['group_id']) ? $data['group_id'] : "";
-	$from_db  = isset($data['group_id']) ? $data['group_id'] : "";
+	$group_id = isset($data['region_id']) ? $data['region_id'] : "";
+	$from_db  = isset($data['region_id']) ? $data['region_id'] : "";
 
 	// print_r($datas);
 ?>
@@ -49,8 +49,22 @@
 											<select name="group_id" id="group" class="input-sm">
 												<option value="0"> -- Choose --</option>
 				 								<?php foreach ($datas as $key => $value): ?>
-													<option value="<?= $value['group_id']; ?>">
-														<?= $value['group_name']; ?>
+													<option value="<?= $value['region_id']; ?>">
+														<?= $value['region_name']; ?>
+													</option>
+												<?php endforeach ?>
+											</select> <i></i>
+										</label>
+									</section>
+
+									<section class="col col-6">
+										<label class="label">Select Kategori</label>
+										<label class="select">
+											<select name="kategori_id" id="group" class="input-sm">
+												<option value="0"> -- Choose --</option>
+				 								<?php foreach ($kategori as $key => $value): ?>
+													<option value="<?= $value['kategori_id']; ?>">
+														<?= $value['kategori_name']; ?>
 													</option>
 												<?php endforeach ?>
 											</select> <i></i>

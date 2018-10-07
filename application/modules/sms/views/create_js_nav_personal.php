@@ -57,8 +57,8 @@
                     return {
                         results: $.map(data.datas, function(item) {
                             return {
-                                text: item.UserDataName,
-                                id: item.UserMobilePhone
+                                text: item.Emp_Name,
+                                id: item.Emp_PhoneNumber
                             }
                         }),
                         pagination: {

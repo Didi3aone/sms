@@ -57,14 +57,16 @@ class Auth extends MX_Controller  {
 			$result = $this->Admin_model->check_login($username, $password);
 
 			//validate result.
-			if ($result) {
+			if ($result) { 
                 //set session user (for login).
                 $sess_data = array(
                 	"IS_LOGIN_ADMIN" => TRUE,
                 	"name"	   		 => $result['user_name'],
                 	"email"	   		 => $result['user_email'],
                 	"password"		 => $result['user_password'],
-                	"user_id"		 => $result['user_id']
+                	"user_id"		 => $result['user_id'],
+                	"level"  		 => $result['RoleId'],
+                	"level_name"     => $result['RoleName']
                 );
                 // pr($sess_data);exit;
                 $this->session->set_userdata($sess_data);

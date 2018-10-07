@@ -18,7 +18,7 @@
 	                    // edit +=  ' <a href="' + url + full.template_id + '" class="btn btn-info btn-circle" rel="tooltip" title="View Group" data-placement="top" ><i class="fa fa-eye"></i></a>';
 	                           
 	                    edit +=  ' <a href="'+ url + "edit/" +full.template_id + '" class="btn btn-primary btn-circle" rel="tooltip" title="Edit Template" data-placement="top" ><i class="fa fa-pencil"></i></a>' +
-	                             ' <a href="'+ url +'delete" data-id ="' + full.template_id + '" data-name ="' + full.template_name + '" class="btn btn-danger btn-circle delete-confirm" rel="tooltip" title="Delete Group" data-placement="top" ><i class="fa fa-trash-o"></i></a>';
+	                             ' <a href="'+ url +'delete" data-id ="' + full.template_id + '" data-name ="' + full.template_name + '" class="btn btn-danger btn-circle delete-confirm" rel="tooltip" title="Delete Template" data-placement="top" ><i class="fa fa-trash-o"></i></a>';
 	                    edit +=  '</td>';
 
 	                return edit;

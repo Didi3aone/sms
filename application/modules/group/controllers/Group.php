@@ -87,9 +87,9 @@ class Group extends CI_Controller {
         //load the model.
 		$this->load->model('Dynamic_model');
 
-        $params = array("row_array" => true,"conditions" => array("group_id" => $group_id));
+        $params = array("row_array" => true,"conditions" => array("region_id" => $group_id));
         //get the data.
-        $data['data'] = $this->Dynamic_model->set_model("tbl_sms_group","tsg","group_id")->get_all_data($params)['datas'];
+        $data['data'] = $this->Dynamic_model->set_model("tbl_region","tr","region_id")->get_all_data($params)['datas'];
 
         //prepare header title.
         $header = array(
@@ -130,7 +130,7 @@ class Group extends CI_Controller {
         $search = sanitize_str_input($this->input->get("search")['value']);
         $filter = $this->input->get("filter");
 
-		$select = array("group_id","group_code","group_name");
+		$select = array("region_id","region_code","region_name");
 
         $column_sort = $select[$sort_col];
 
@@ -145,7 +145,7 @@ class Group extends CI_Controller {
                 switch ($key) {
                     case 'id':
                         if ($value != "") {
-                            $data_filters['lower(group_id)'] = $value;
+                            $data_filters['lower(region_id)'] = $value;
                         }
                         break;
                     default:
@@ -155,7 +155,7 @@ class Group extends CI_Controller {
         }
 
         //get data
-        $datas = $this->Dynamic_model->set_model("tbl_sms_group","tsg","group_id")->get_all_data(array(
+        $datas = $this->Dynamic_model->set_model("tbl_region","tr","region_id")->get_all_data(array(
 			'select' => $select,
             'order_by' => array($column_sort => $sort_dir),
 			'limit' => $limit,
@@ -201,12 +201,12 @@ class Group extends CI_Controller {
 
         if ($id == "") {
             //from create
-            $params['conditions'] = array("lower(group_name)" => strtolower($str));
+            $params['conditions'] = array("lower(region_name)" => strtolower($str));
         } else {
-            $params['conditions'] = array("lower(group_name)" => strtolower($str), "group_id !=" => $id);
+            $params['conditions'] = array("lower(region_name)" => strtolower($str), "group_id !=" => $id);
         }
 
-        $datas = $this->Dynamic_model->set_model("tbl_sms_group","tsg","group_id")->get_all_data($params)['datas'];
+        $datas = $this->Dynamic_model->set_model("tbl_region","tsg","group_id")->get_all_data($params)['datas'];
 
         if ($datas) {
             $isValid = false;
@@ -253,14 +253,14 @@ class Group extends CI_Controller {
 
             //validation success, prepare array to DB.
             $_save_data = array(
-                'group_code'  => $code,
-                'group_name'  => $name
+                'region_code'  => $code,
+                'region_name'  => $name
             );
 
             //insert or update?
             if ($id == "") {
                 //insert to DB.
-                $result = $this->Dynamic_model->set_model("tbl_sms_group","tsg","group_id")->insert($_save_data);
+                $result = $this->Dynamic_model->set_model("tbl_region","tr","region_id")->insert($_save_data);
 
                 //end transaction.
                 if ($this->db->trans_status() === FALSE) {
@@ -275,7 +275,7 @@ class Group extends CI_Controller {
                     //success.
                     //growler.
                     $message['notif_title'] = "Good!";
-                    $message['notif_message'] = "New Group has been added.";
+                    $message['notif_message'] = "New Region has been added.";
 
                     //on insert, not redirected.
                     $message['redirect_to'] = site_url("group");
@@ -284,8 +284,8 @@ class Group extends CI_Controller {
             } else {
                 //update.
                 //condition for update.
-                $condition = array("group_id" => $id);
-                $result = $this->Dynamic_model->set_model("tbl_sms_group","tsg","group_id")->update($_save_data, $condition);
+                $condition = array("region_id" => $id);
+                $result = $this->Dynamic_model->set_model("tbl_region","tr","region_id")->update($_save_data, $condition);
 
                 //end transaction.
                 if ($this->db->trans_status() === FALSE) {
@@ -298,7 +298,7 @@ class Group extends CI_Controller {
                     //success.
                     //growler.
                     $message['notif_title'] = "Excellent!";
-                    $message['notif_message'] = "Group has been updated.";
+                    $message['notif_message'] = "Region has been updated.";
 
                     //on update, redirect.
                     $message['redirect_to'] = site_url("group");
@@ -325,7 +325,7 @@ class Group extends CI_Controller {
 		} else {
 			$conditions = array("group_id" => $id);
 
-			$delete = $this->Dynamic_model->set_model("tbl_sms_group","tsg","group_id")->delete($conditions);
+			$delete = $this->Dynamic_model->set_model("tbl_region","tsg","region_id")->delete($conditions);
 
 			if($delete) {
 				$message['is_error'] = false;

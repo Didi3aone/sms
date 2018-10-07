@@ -95,7 +95,7 @@ class Upload extends CI_Controller {
         //check validation
         if (isset($_FILES['file']['size']) && $_FILES['file']['size'] > 0) {
             $filename = $_FILES['file']['tmp_name'];
-            pr($_FILES['file']);exit;
+            // pr($_FILES['file']);exit;
 
             // move_uploaded_file($_FILES['file'], $path);
             //check max file upload
@@ -137,37 +137,78 @@ class Upload extends CI_Controller {
                                     $line++;
                                 } else {
                                     // persiapan data
+
+                                    $get_area = $this->Dynamic_model->set_model("tbl_region","tr","region_id")->get_all_data(array(
+                                            "conditions" => array("tr.region_name" => strtoupper($model[3])),
+                                            "row_array"  => true,
+                                            "debug"      => false,
+                                            // "order_by"   => false
+                                        ))['datas'];
+
+                                    $get_kategori = $this->Dynamic_model->set_model("tbl_kategori","tk","kategori_id")->get_all_data(array(
+                                            "conditions" => array("tk.kategori_name" => strtoupper($model[29])),
+                                            "row_array"  => true,
+                                            "debug"      => false,
+                                        ))['datas'];
+
+                                    // pr($get_area);exit();
+                                    $area  = "";
+                                    $code  = "00";
+                                    $code += 1;
+
+                                    if( empty($get_area['region_name'] )) {
+                                        $this->Dynamic_model->set_model("tbl_region","tr","region_id")->insert(
+                                            array(
+                                                "region_name" => strtoupper($model[3]),
+                                                "region_code" => str_pad($code, 4, "0", STR_PAD_LEFT)
+                                            )
+                                        );
+                                    } 
+
+                                    if( empty($get_kategori['kategori_name'] )) {
+                                        $this->Dynamic_model->set_model("tbl_kategori","tk","kategori_id")->insert(
+                                            array(
+                                                "kategori_name" => strtoupper($model[29])
+                                            )
+                                        );
+                                    } 
+
+                                    // foreach($get_area as $key => $val) {
+                                    //     $get_a = $val['region_id'];
+                                    // }
+
                                     $data = array(
                                         "Emp_Name" 		       => $model[0],
-                                        "Emp_Dob" 	           => $model[1],
-                                        "Emp_Pob"  	           => $model[2],
-                                        "Emp_Address"          => $model[3],
-                                        "Emp_AreaId"           => $model[4],
-                                        "Emp_PhoneNumber"      => $model[5], 
-                                        "Emp_Email"            => $model[6], 
-                                        "Emp_LastEducation"    => $model[7], 
-                                        "Emp_EndEducation"     => $model[8], 
-                                        "Emp_TotalWorkExp"     => $model[9], 
-                                        "Emp_WI_CerfNo"        => $model[10], 
-                                        "Emp_WI_Level"         => $model[11], 
-                                        "Emp_WI_IssuedBy"      => $model[12], 
-                                        "Emp_WI_ValidPeriod"   => $model[13], 
-                                        "Emp_UT_CerfNo"        => $model[14], 
-                                        "Emp_UT_Level"         => $model[15], 
-                                        "Emp_UT_IssuedBy"      => $model[16], 
-                                        "Emp_UT_ValidPeriod"   => $model[17],
-                                        "Emp_MPI_CerfNo"       => $model[18],
-                                        "Emp_MPI_Level"        => $model[19],
-                                        "Emp_MPI_IssuedBy"     => $model[20],
-                                        "Emp_MPI_ValidPeriod"  => $model[21],
-                                        "Emp_PT_CerfNo"        => $model[22],
-                                        "Emp_PT_Level"         => $model[23],
-                                        "Emp_PT_IssuedBy"      => $model[24],
-                                        "Emp_PT_ValidPeriod"   => $model[25],
-                                        "Emp_IR_CerfNo"        => $model[26],
-                                        "Emp_IR_Level"         => $model[27],
-                                        "Emp_IR_IssuedBy"      => $model[28],
-                                        "Emp_IR_ValidPeriod"   => $model[29],
+                                        "Emp_DOB_POB"          => $model[1],
+                                        // "Emp_Pob"  	           => $model[2],
+                                        "Emp_Address"          => $model[2],
+                                        "Emp_AreaId"           => $model[3],
+                                        "Emp_PhoneNumber"      => $model[4], 
+                                        "Emp_Email"            => $model[5], 
+                                        "Emp_LastEducation"    => $model[6], 
+                                        "Emp_EndEducation"     => $model[7], 
+                                        "Emp_TotalWorkExp"     => $model[8], 
+                                        "Emp_WI_CerfNo"        => $model[9], 
+                                        "Emp_WI_Level"         => $model[10], 
+                                        "Emp_WI_IssuedBy"      => $model[11], 
+                                        "Emp_WI_ValidPeriod"   => $model[12], 
+                                        "Emp_UT_CerfNo"        => $model[13], 
+                                        "Emp_UT_Level"         => $model[14], 
+                                        "Emp_UT_IssuedBy"      => $model[15], 
+                                        "Emp_UT_ValidPeriod"   => $model[16],
+                                        "Emp_MPI_CerfNo"       => $model[17],
+                                        "Emp_MPI_Level"        => $model[18],
+                                        "Emp_MPI_IssuedBy"     => $model[19],
+                                        "Emp_MPI_ValidPeriod"  => $model[20],
+                                        "Emp_PT_CerfNo"        => $model[21],
+                                        "Emp_PT_Level"         => $model[22],
+                                        "Emp_PT_IssuedBy"      => $model[23],
+                                        "Emp_PT_ValidPeriod"   => $model[24],
+                                        "Emp_IR_CerfNo"        => $model[25],
+                                        "Emp_IR_Level"         => $model[26],
+                                        "Emp_IR_IssuedBy"      => $model[27],
+                                        "Emp_IR_ValidPeriod"   => $model[28],
+                                        "Emp_KategoriId"       => $model[29]
                                     );
 
                                     // validasi di jadikan satu di fungsi validate_import.
@@ -183,55 +224,62 @@ class Upload extends CI_Controller {
                                         $user_upload = $this->session->userdata("user_id");
 
                                         $get_area = $this->Dynamic_model->set_model("tbl_region","tr","region_id")->get_all_data(array(
-                                            "conditions" => array("tr.region_name" => strtoupper($model[4]))
+                                            "conditions" => array("tr.region_name" => strtoupper($model[3])),
+                                            "row_array"  => true,
+                                            "debug"      => false,
                                         ))['datas'];
 
-                                        $area = "";
-                                        $code = "001";
-                                        $code = $code + 1;
+                                        $get_kategori = $this->Dynamic_model->set_model("tbl_kategori","tk","kategori_id")->get_all_data(array(
+                                            "conditions" => array("tk.kategori_name" => strtoupper($model[29])),
+                                            "row_array"  => true,
+                                            "debug"      => false,
+                                        ))['datas'];
 
-                                        if( $get_area['region_name'] == "") {
-                                            $this->Dynamic_model->set_model("tbl_region","tr","region_id")->insert(
-                                                array(
-                                                    "region_name" => strtoupper($model[4]),
-                                                    "region_code" => str_pad($code, 4, "0", STR_PAD_LEFT)
-                                                )
-                                            );
+                                        //cek no jika awalan 0 ,8,62
+                                        //di ganti  +62
+                                        $No = $model[4];
+                                        $No62 = substr($No, 0,1 );
+                                        if( !strcmp($No62, '0')){
+                                            $No = substr($No, 1, strlen($No)-1);
+                                            $No = sprintf("+62%s", $No);
+                                        } else if(!strcmp($No62, '8')) {
+                                            $No = sprintf("+62%s", $No);
+                                        } else {
+                                            $No = "+";
+                                            $No .= $model[4];
                                         }
-                                        // if( $model[5] !=)
-                                        $str = "+";
-                                        $str .= $model[5];
+                                        // print_r($model[0]);exit;
                                         $array_insert = array(
                                             "Emp_Name"             => $model[0],
-                                            "Emp_Dob"              => $model[1],
-                                            "Emp_Pob"              => $model[2],
-                                            "Emp_Address"          => $model[3],
+                                            "Emp_DOB_POB"          => $model[1],
+                                            "Emp_Address"          => $model[2],
                                             "Emp_AreaId"           => $get_area['region_id'],
-                                            "Emp_PhoneNumber"      => $str, 
-                                            "Emp_Email"            => $model[6], 
-                                            "Emp_LastEducation"    => $model[7], 
-                                            "Emp_EndEducation"     => $model[8], 
-                                            "Emp_TotalWorkExp"     => $model[9], 
-                                            "Emp_WI_CerfNo"        => $model[10], 
-                                            "Emp_WI_Level"         => $model[11], 
-                                            "Emp_WI_IssuedBy"      => $model[12], 
-                                            "Emp_WI_ValidPeriod"   => $model[13], 
-                                            "Emp_UT_CerfNo"        => $model[14], 
-                                            "Emp_UT_Level"         => $model[15], 
-                                            "Emp_UT_IssuedBy"      => $model[16], 
-                                            "Emp_UT_ValidPeriod"   => $model[17],
-                                            "Emp_MPI_CerfNo"       => $model[18],
-                                            "Emp_MPI_Level"        => $model[19],
-                                            "Emp_MPI_IssuedBy"     => $model[20],
-                                            "Emp_MPI_ValidPeriod"  => $model[21],
-                                            "Emp_PT_CerfNo"        => $model[22],
-                                            "Emp_PT_Level"         => $model[23],
-                                            "Emp_PT_IssuedBy"      => $model[24],
-                                            "Emp_PT_ValidPeriod"   => $model[25],
-                                            "Emp_IR_CerfNo"        => $model[26],
-                                            "Emp_IR_Level"         => $model[27],
-                                            "Emp_IR_IssuedBy"      => $model[28],
-                                            "Emp_IR_ValidPeriod"   => $model[29],
+                                            "Emp_PhoneNumber"      => $No, 
+                                            "Emp_Email"            => $model[5], 
+                                            "Emp_LastEducation"    => $model[6], 
+                                            "Emp_EndEducation"     => $model[7], 
+                                            "Emp_TotalWorkExp"     => $model[8], 
+                                            "Emp_WI_CerfNo"        => $model[9], 
+                                            "Emp_WI_Level"         => $model[10], 
+                                            "Emp_WI_IssuedBy"      => $model[11], 
+                                            "Emp_WI_ValidPeriod"   => $model[12], 
+                                            "Emp_UT_CerfNo"        => $model[13], 
+                                            "Emp_UT_Level"         => $model[14], 
+                                            "Emp_UT_IssuedBy"      => $model[15], 
+                                            "Emp_UT_ValidPeriod"   => $model[16],
+                                            "Emp_MPI_CerfNo"       => $model[17],
+                                            "Emp_MPI_Level"        => $model[18],
+                                            "Emp_MPI_IssuedBy"     => $model[19],
+                                            "Emp_MPI_ValidPeriod"  => $model[20],
+                                            "Emp_PT_CerfNo"        => $model[21],
+                                            "Emp_PT_Level"         => $model[22],
+                                            "Emp_PT_IssuedBy"      => $model[23],
+                                            "Emp_PT_ValidPeriod"   => $model[24],
+                                            "Emp_IR_CerfNo"        => $model[25],
+                                            "Emp_IR_Level"         => $model[26],
+                                            "Emp_IR_IssuedBy"      => $model[27],
+                                            "Emp_IR_ValidPeriod"   => $model[28],
+                                            "Emp_KategoriId"       => $get_kategori['kategori_id'],
                                             "Emp_CreatedDate"      => $today,
                                             "Emp_UploadedDate"     => $today,
                                             "Emp_UploadedBy"       => $user_upload

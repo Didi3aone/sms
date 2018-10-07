@@ -144,13 +144,9 @@ class Sms extends CI_Controller {
             "row_array" => false
         );
 
-        $datas = $this->Dynamic_model->set_model(
+        $data['template'] = $this->Dynamic_model->set_model(
             "tbl_sms_template", "tst","template_id"
         )->get_all_data($params)['datas'];
-
-        $data = array(
-            'datas' => $datas
-        );
 
         //prepare header title.
         $header = array(
@@ -235,44 +231,46 @@ class Sms extends CI_Controller {
         $this->_breadcrumb .= '<li><a href="'.site_url('sms').'">Replay Sms</a></li>';
         //load the models
         $this->load->model("Dynamic_model");
-        //replace no
-        $no_fix = str_replace("62", "+62", $no);
-        $no_db  = str_replace("62", "0", $no);
-        //prepare set datas
-        $param = array(
-            "status"      => -1,
-            "row_array"   => false,
-            "conditions"  => array("in.SenderNumber" => $no_fix),
-            "order_by"    => array("in.ReceivingDateTime" => "desc"),
-            "debug"       => false
-        );
-        //get all data inbox by no
-        $data_inbox = $this->Dynamic_model->set_model(
-            "inbox", "in","ID"
-        )->get_all_data($param)['datas'];
 
+        $No62 = substr($no, 0,1 );
+
+        if( !strcmp($No62, '0')){
+            $No = substr($no, 1, strlen($no)-1);
+            $No = sprintf("+62%s", $No);
+        } else if(!strcmp($No62, '8')) {
+            $No = sprintf("+62%s", $no);
+        } else {
+            $No = "+";
+            $No .= $no;
+        }
+        //replace no
+        // $no_fix = str_replace("62", "+62", $no);
+        // $no_db  = str_replace("62", "0", $no);
         //prepare set datas
         $params = array(
-            "status" => -1,
-            "row_array" => false
+            "select"      => "ix.*,me.Emp_Name, me.Emp_PhoneNumber",
+            "left_joined" => array(
+                "mst_employee me" => array("me.Emp_PhoneNumber" => "ix.SenderNumber"),
+                // "sentitems si" => array("si.DestinationNumber" => "ix.SenderNumber")
+            ),
+            "conditions"  => array("ix.SenderNumber" => $No),
+            "order_by"    => array("ix.ReceivingDateTime, si.SendingDateTime" => "desc"),
+            "debug"       => false
         );
+
         //get template
-        $datas = $this->Dynamic_model->set_model(
-            "tbl_sms_template", "tst","template_id"
-        )->get_all_data($params)['datas'];
-        //get me sentitems
-        $me = $this->Dynamic_model->set_model("sentitems","si","ID")->get_all_data(array(
-            "conditions" => array("DestinationNumber" => $no_db),
-            "order_by"   => array("si.SendingDateTime" => "desc")
+        $data['template'] = $this->Dynamic_model->set_model("tbl_sms_template","tst","template_id")->get_all_data()['datas'];
+
+        $data['inbox'] = $this->Dynamic_model->set_model("inbox","ix","ID")->get_all_data($params)['datas'];
+        $data['inbox_row'] = $this->Dynamic_model->set_model("inbox","ix","ID")->get_all_data(array(
+            "row_array" => true,
+            "conditions" => array("ix.SenderNumber" => $No)
         ))['datas'];
 
-        $data = array(
-            'datas' => $datas,
-            "inbox" => $data_inbox,
-            "me"    => $me
-        );
-
-
+        $result = $this->Dynamic_model->set_model("inbox","ix","ID")->update(array(
+            "IsRead" => STATUS_READ
+        ),array("SenderNumber" => $No));
+        // pr($data['inbox_row']);exit;
         //prepare header title.
         $header = array(
             "title"         => $this->_title,
@@ -317,7 +315,13 @@ class Sms extends CI_Controller {
         );
         $this->load->model("Dynamic_model");
 
-        $data = $this->Dynamic_model->set_model("tbl_sms_group","tsg","group_id")->get_all_data(array(
+        $data = $this->Dynamic_model->set_model("tbl_region","trg","region_id")->get_all_data(array(
+            "row_array"  => false,
+            "status"     => -1,
+            "debug"      => false
+        ))['datas'];
+
+        $kategori = $this->Dynamic_model->set_model("tbl_kategori","tk","kategori_id")->get_all_data(array(
             "row_array"  => false,
             "status"     => -1,
             "debug"      => false
@@ -337,7 +341,8 @@ class Sms extends CI_Controller {
 
         $data = array(
             'datas' => $data,
-            'data'  => $datas
+            'data'  => $datas,
+            'kategori' => $kategori
         );
 
         $footer = array(
@@ -517,8 +522,20 @@ class Sms extends CI_Controller {
         $msg           = addslashes($this->input->post('isi'));
         $creator       = $this->session->userdata('name');
 
+        $No = $no_hp;
+        $No62 = substr($No, 0,1 );
+        if( !strcmp($No62, '0')){
+            $No = substr($No, 1, strlen($No)-1);
+            $No = sprintf("+62%s", $No);
+        } else if(!strcmp($No62, '8')) {
+            $No = sprintf("+62%s", $No);
+        } else {
+            $No = $no_hp;
+        }
+
         $this->form_validation->set_rules('isi',"Message","required");
-        $fix_no        = ($no_hp) ? $no_hp : $no_hps;
+        $fix_no        = ($No) ? $No : $no_hps;
+        
 
         if( $this->form_validation->run() == FALSE) {
             $message['error_msg'] = validation_errors();
@@ -626,78 +643,78 @@ class Sms extends CI_Controller {
         exit;
     }
 
-    public function process_form_schedule() {
-        //must ajax and must post.
+    // public function process_form_schedule() {
+    //     //must ajax and must post.
 
-        //load form validation lib.
-        $this->load->library('form_validation');
+    //     //load form validation lib.
+    //     $this->load->library('form_validation');
 
-        //load the model.
-        $this->load->model('Dynamic_model');
+    //     //load the model.
+    //     $this->load->model('Dynamic_model');
 
-        //initial.
-        $message['is_error'] = true;
-        $message['error_msg'] = "";
-        $message['redirect_to'] = "";
+    //     //initial.
+    //     $message['is_error'] = true;
+    //     $message['error_msg'] = "";
+    //     $message['redirect_to'] = "";
 
-        $this->form_validation->set_rules('isi',"Message","required");
+    //     $this->form_validation->set_rules('isi',"Message","required");
 
-        //sanitize input (id is primary key, if from edit, it has value).
-        $id            = $this->input->post('id');
-        $no_hp         = $this->input->post('nomor');
-        $no_hps        = $this->input->post('nomors');
-        $type          = $this->input->post('type');
-        $template_id   = $this->input->post('template_id');
-        $msg           = $this->input->post('isi');
-        $creator       = $this->session->userdata('name');
-        $time          = $this->input->post("date_val");
+    //     //sanitize input (id is primary key, if from edit, it has value).
+    //     $id            = $this->input->post('id');
+    //     $no_hp         = $this->input->post('nomor');
+    //     $no_hps        = $this->input->post('nomors');
+    //     $type          = $this->input->post('type');
+    //     $template_id   = $this->input->post('template_id');
+    //     $msg           = $this->input->post('isi');
+    //     $creator       = $this->session->userdata('name');
+    //     $time          = $this->input->post("date_val");
 
-        $time          = str_replace("/","-",$time);
-        $time          = date("Y-m-d H:i:s", strtotime($time));
-        $fix_no        = ($no_hp) ? $no_hp : $no_hps;
-        // pr($time);exit;
+    //     $time          = str_replace("/","-",$time);
+    //     $time          = date("Y-m-d H:i:s", strtotime($time));
+    //     $fix_no        = ($no_hp) ? $no_hp : $no_hps;
+    //     // pr($time);exit;
 
-        if( $this->form_validation->run() == FALSE) {
-            $message['error_msg'] = validation_errors();
-        } else {
-            //validation success, prepare array to DB.
-            $this->db->trans_begin();
-            $_save_data = array(
-                'DestinationNumber'   => $fix_no,
-                'TextDecoded'         => $msg,
-                'CreatorID'           => $creator,
-                'SendingDateTime'     => $time,
-                'UpdatedInDB'         => $time,
-                'InsertIntoDB'        => $time,
-                'type_id'             => $type,
-                'template_id'         => $template_id
-            );
-            if ( $_save_data ) {
-                // pr($this->input->post());exit;
-                $sent_sms = $this->Dynamic_model->set_model("outbox","ot","ID")->insert($_save_data);
-                if ($this->db->trans_status() === FALSE) {
-                    $this->db->trans_rollback();
-                    $message['is_error'] = true;
-                    $message['error_msg'] = "Internal server error";
-                } else {
-                    $this->db->trans_commit();
-                    $message['is_error'] = false;
-                    //success.
-                    $message['notif_title'] = "Good!";
-                    $message['notif_message'] = "SMS IS SEND.";
+    //     if( $this->form_validation->run() == FALSE) {
+    //         $message['error_msg'] = validation_errors();
+    //     } else {
+    //         //validation success, prepare array to DB.
+    //         $this->db->trans_begin();
+    //         $_save_data = array(
+    //             'DestinationNumber'   => $fix_no,
+    //             'TextDecoded'         => $msg,
+    //             'CreatorID'           => $creator,
+    //             'SendingDateTime'     => $time,
+    //             'UpdatedInDB'         => $time,
+    //             'InsertIntoDB'        => $time,
+    //             'type_id'             => $type,
+    //             'template_id'         => $template_id
+    //         );
+    //         if ( $_save_data ) {
+    //             // pr($this->input->post());exit;
+    //             $sent_sms = $this->Dynamic_model->set_model("outbox","ot","ID")->insert($_save_data);
+    //             if ($this->db->trans_status() === FALSE) {
+    //                 $this->db->trans_rollback();
+    //                 $message['is_error'] = true;
+    //                 $message['error_msg'] = "Internal server error";
+    //             } else {
+    //                 $this->db->trans_commit();
+    //                 $message['is_error'] = false;
+    //                 //success.
+    //                 $message['notif_title'] = "Good!";
+    //                 $message['notif_message'] = "SMS IS SEND.";
 
-                    //on insert, not redirected.
-                    $message['redirect_to'] = site_url('sms/outbox');
-                }
-            } else {
-                $message['error_msg'] = "Internal server error";
-            }
-        }
-        //encoding and returning.
-        $this->output->set_content_type('application/json');
-        echo json_encode($message);
-        exit;
-    }
+    //                 //on insert, not redirected.
+    //                 $message['redirect_to'] = site_url('sms/outbox');
+    //             }
+    //         } else {
+    //             $message['error_msg'] = "Internal server error";
+    //         }
+    //     }
+    //     //encoding and returning.
+    //     $this->output->set_content_type('application/json');
+    //     echo json_encode($message);
+    //     exit;
+    // }
     /*
     * function proses send sms checkbox
     * json data
@@ -823,7 +840,7 @@ class Sms extends CI_Controller {
         //load the model.
         $this->load->model('Dynamic_model');
 
-        $this->form_validation->set_rules('isi',"Message","required");
+        $this->form_validation->set_rules('content',"Message","required");
 
         //initial.
         $message['is_error'] = true;
@@ -834,7 +851,7 @@ class Sms extends CI_Controller {
         $id            = $this->input->post('id');
         $no_hp         = $this->input->post('nomor');
         $template_id   = $this->input->post('template_id');
-        $msg           = $this->input->post('isi');
+        $msg           = $this->input->post('content');
         $creator       = $this->session->userdata("name");
 
         if( $this->form_validation->run() == FALSE) {
@@ -871,7 +888,7 @@ class Sms extends CI_Controller {
                     $message['notif_message'] = "SMS IS SEND.";
 
                     //on insert, not redirected.
-                    $message['redirect_to'] = site_url('sms/outbox');
+                    $message['redirect_to'] = "";
                 }
             } else {
                 $message['error_msg'] = "Internal Server Error!!!";
@@ -905,6 +922,7 @@ class Sms extends CI_Controller {
         $template_id    = $this->input->post('template_id');
         $msg            = $this->input->post('message');
         $group_id       = $this->input->post('group_id');
+        $kategori_id    = $this->input->post('kategori_id');
         $create         = $this->session->userdata('user_id');
 
         if( $this->form_validation->run() == FALSE ) {
@@ -913,48 +931,47 @@ class Sms extends CI_Controller {
             //validation success, prepare array to DB.
             $this->db->trans_begin();
 
-            //get data in group
-            $param_get = array(
-                "select" => "tnd.UserMobilePhone",
-                "joined" => array("mst_data_user tnd" => array("tnd.UserGroupId" => "gg.group_id")),
-                "status" => -1,
-                "conditions" => array("group_id" => $group_id)
-            );
-
-            $grup = $this->Dynamic_model->set_model("tbl_sms_group", "gg", "group_id")->get_all_data($param_get)['datas'];
+            $data = $this->Dynamic_model->set_model("mst_employee","me","Emp_Id")->get_all_data(array(
+                "select" => "me.Emp_PhoneNumber ",
+                "joined" => array("tbl_kategori tk" => array("tk.kategori_id" => "me.Emp_KategoriId"),
+                    "tbl_region tr" => array("tr.region_id" => "me.Emp_AreaId")
+                ),
+                "conditions" => array("tr.region_id" => $group_id, "tk.kategori_id" => $kategori_id),
+                "debug" => false
+            ))['datas'];
+            // pr($data);exit;
             // pr($grup);exit();
-            foreach ($grup as $key => $val)
+            // $_save_data = [];
+            foreach ($data as $key => $val)
             {
                 $_save_data = array(
-                    "DestinationNumber" => $val['UserMobilePhone'],
+                    "DestinationNumber" => $val['Emp_PhoneNumber'],
                     "TextDecoded"  => $msg,
                     "CreatorID"    => $create,
                     "type_id"      => 3,
                     "template_id"  => $template_id,
                     "OutGroupId"   => $group_id
                 );
+                // pr($this->input->post());exit;
                 $result = $this->Dynamic_model->set_model("outbox","ot","ID")->insert($_save_data);
             }
-
-            if ( $result )
-            {
-                if ($this->db->trans_status() === FALSE) {
-                    $this->db->trans_rollback();
-                    $message['is_error'] = true;
-                    $message['error_msg'] = "Internal server error";
-                } else {
-                    $this->db->trans_commit();
-                    $message['is_error'] = false;
-                    //success.
-                    $message['notif_title'] = "Good!";
-                    $message['notif_message'] = "SMS IS SEND.";
-
-                    //on insert, not redirected.
-                    $message['redirect_to'] = site_url('sms/outbox');
-                }
-            } else {
+                
+                
+            if ($this->db->trans_status() === FALSE) {
+                $this->db->trans_rollback();
+                $message['is_error'] = true;
                 $message['error_msg'] = "Internal server error";
+            } else {
+                $this->db->trans_commit();
+                $message['is_error'] = false;
+                //success.
+                $message['notif_title'] = "Good!";
+                $message['notif_message'] = "SMS IS SEND.";
+
+                //on insert, not redirected.
+                $message['redirect_to'] = site_url('sms/outbox');
             }
+            // $message['error_msg'] = "Internal server error";
         }
         //encoding and returning.
         $this->output->set_content_type('application/json');
@@ -972,7 +989,7 @@ class Sms extends CI_Controller {
         }
 
         //load model
-        $this->load->model('Dynamic_model');
+        $this->load->model('Sms_model');
 
         $sort_col = sanitize_str_input($this->input->get("order")['0']['column'], "numeric");
         $sort_dir = sanitize_str_input($this->input->get("order")['0']['dir']);
@@ -981,7 +998,10 @@ class Sms extends CI_Controller {
         $search   = sanitize_str_input($this->input->get("search")['value']);
         $filter   = $this->input->get("filter");
 
-        $select   = array("ID","SenderNumber","ReceivingDateTime","TextDecoded","IF(IsRead = 1, 'READ', 'UNREAD') as statusSms");
+        $select   = array("
+            (CASE WHEN me.Emp_PhoneNumber = ix.SenderNumber THEN me.Emp_Name ELSE ix.SenderNumber END) as SenderNumbers","SenderNumber","ID","ReceivingDateTime","TextDecoded","IF(IsRead = 1, 'READ', 'UNREAD') as statusSms");
+
+        $left_joined = array("mst_employee me" => array("me.Emp_PhoneNumber" => "ix.SenderNumber"));
 
         $column_sort = $select[$sort_col];
 
@@ -1011,18 +1031,19 @@ class Sms extends CI_Controller {
         }
 
         //get data
-        $datas = $this->Dynamic_model->set_model("inbox","in","ID")->get_all_data(array(
+        $datas = $this->Sms_model->set_model("inbox","ix","ID")->get_all_data(array(
             'select'          => $select,
+            'left_joined'     => $left_joined,
             'order_by'        => array($column_sort => $sort_dir),
             'limit'           => $limit,
             'start'           => $start,
             'conditions'      => $conditions,
             'filter'          => $data_filters,
             'status'          => -1,
-            'group_by'        => array("in.SenderNumber"),
-            'order_by'        => array("in.ReceivingDateTime" => "desc"),  
+            'group_by'        => array("SenderNumber"),
+            'order_by'        => array("ReceivingDateTime" => "desc"),  
             'count_all_first' => true,
-            'debug'           => false
+            // 'debug'           => true,
         ));
 
         //get total rows
@@ -1098,6 +1119,7 @@ class Sms extends CI_Controller {
             'conditions' => $conditions,
             'filter' => $data_filters,
             'status' => -1,
+            // 'group_by' => array("ts.DestinationNumber"),
             'debug' => false,
             "count_all_first" => true
         ));
@@ -1296,14 +1318,14 @@ class Sms extends CI_Controller {
 
         //statement
         if($select_q != "") {
-            $filters['UserDataName'] = $select_q;
+            $filters['Emp_Name'] = $select_q;
         }
 
         $conditions = array();
 
         //prepare get data
-        $params = $this->Dynamic_model->set_model("mst_data_user","tnd","UserMobilePhone")->get_all_data(array(
-            "select"            => "UserMobilePhone, UserDataName",
+        $params = $this->Dynamic_model->set_model("mst_employee","me","Emp_Id")->get_all_data(array(
+            "select"            => "Emp_PhoneNumber, Emp_Name",
             "count_all_first"   => true,
             "filter_or"         => $filters,
             "conditions"        => $conditions,
@@ -1405,5 +1427,29 @@ class Sms extends CI_Controller {
         $data = $this->Dynamic_model->set_model("mst_data_user","mdu","UserDataId")->get_all_data($params)['datas'];
         // pr($data);exit;
         return $data;
+    }
+
+    //load auto chat
+    public function load_chat ($no)
+    {
+        // $id = $this->session->userdata("user_id");
+        $this->load->model('Sms_model');
+
+        $data = $this->Sms_model->get_chat($no);
+
+        foreach ($data as $key => $val) {
+            echo "<li class='message'>";
+            echo "<div class='username' style='color:blue;'>";
+            echo $val['user_full_name'];
+            echo "</div>";
+            echo "<div class='message-text'>";
+            echo "<time>";
+            echo $val['ChatDate'];
+            echo "</time>";
+            echo $val['ChatContent'];
+            echo "</div>";
+            echo "</div>";
+            echo "</li>";
+        } 
     }
 }

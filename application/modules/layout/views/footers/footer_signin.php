@@ -1,6 +1,6 @@
 <!-- copyright -->
         <div class="footer">
-            <p>&copy; 2018 All rights reserved 
+            <p>&copy; 2018 PT.Sudarta Consulting All rights reserved 
                 <!-- | Design by -->
                 <!-- <a href="http://w3layouts.com">W3layouts</a> -->
             </p>

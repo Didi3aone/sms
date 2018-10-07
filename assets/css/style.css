@@ -1,4 +1,4 @@
-/*
+/*/*
  * It is advised not to edit the smartadmin_production.css
  * as this will override any changes you make in the
  * later versions of this theme.
@@ -396,4 +396,21 @@ nav ul li.active > a:before {
     position: absolute;
     display: block;
     bottom: 0px;
+}
+
+hr.message-inner-separator
+{
+    clear: both;
+    margin-top: 10px;
+    margin-bottom: 13px;
+    border: 0;
+    height: 1px;
+    background-image: -webkit-linear-gradient(left,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0.15),rgba(0, 0, 0, 0));
+    background-image: -moz-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
+    background-image: -ms-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
+    background-image: -o-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
+}
+
+.smart-style-2 #logo-group>span .badge {
+    background: #ef0016;
 }

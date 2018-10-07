@@ -3,12 +3,20 @@
 
 class Sms_model extends CI_Model {
 
-    protected $_table = 'tbl_sms';
-    protected $_table_alias = 'ts';
-    protected $_pk_field = 'sms_id';
+    protected $_table = '';
+    protected $_table_alias = '';
+    protected $_pk_field = '';
 
     public function __construct() {
         parent::__construct();
+    }
+
+    public function set_model($table_name = null, $table_alias = null, $table_pk = null) {
+        $this->_table = $table_name;
+        $this->_table_alias = $table_alias;
+        $this->_pk_field = $table_pk;
+
+        return $this;
     }
 
     /**
@@ -228,5 +236,20 @@ class Sms_model extends CI_Model {
             }
         }
         return $data;
+    }
+
+    //get chat
+    function get_chat($no)
+    {
+        $this->db->select("ix.*,si ");
+        $this->db->from("inbox ix");
+        $this->db->join("sentitems si ","si.DestinationNumber = ix.SenderNumber");
+        $this->db->join("outbox si ","si.DestinationNumber = si.DestinationNumber","left");
+        $this->db->where("(ix.SenderNumber = '".$no."' OR si.DestinationNumber = '".$no."')");
+        $this->db->order_by("ix.ReceivingDateTime, si.SendingDateTime");
+        // echo $this->db->last_query();
+        $res = $this->db->get();
+
+        return $res->result_array();
     }
 }

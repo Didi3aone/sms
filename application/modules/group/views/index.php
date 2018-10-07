@@ -49,7 +49,7 @@
                                         <th class="hasinput">
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input type="text" id="name_filter" name="filter[name]" class="form-control filter-this" placeholder="Kode Group" />
+                                                    <input type="text" id="name_filter" name="filter[name]" class="form-control filter-this" placeholder="Kode Area" />
                                                     <div class="input-group-btn"><button type="button" class="clear-filter btn"><i class="fa fa-close"></i></button></div>
                                                 </div>
                                             </div>
@@ -57,7 +57,7 @@
                                         <th class="hasinput">
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input type="text" id="username_filter" name="filter[username]" class="form-control filter-this" placeholder="Nama Group" />
+                                                    <input type="text" id="username_filter" name="filter[username]" class="form-control filter-this" placeholder="Nama Area" />
                                                     <div class="input-group-btn"><button type="button" class="clear-filter btn"><i class="fa fa-close"></i></button></div>
                                                 </div>
                                             </div>
@@ -94,9 +94,9 @@
                                     <th></th>
                                     </tr>
                                     <tr>
-                                        <th data-hide="phone,tablet">Group ID</th>
-                                        <th data-class="expand"> Group Code</th>
-                                        <th data-hide="phone"> Group Name</th>
+                                        <th data-hide="phone,tablet">Area ID</th>
+                                        <th data-class="expand"> Area Code</th>
+                                        <th data-hide="phone"> Area Name</th>
                                         <th> Action</th>
                                     </tr>
                                 </thead>

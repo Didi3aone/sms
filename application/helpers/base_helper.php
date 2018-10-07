@@ -20,6 +20,11 @@ function get_client_ip() {
     return $ipaddress;
 }
 
+function to_dates($date) {
+    
+    return ($date) ? date('Y-m-d', strtotime($date)) : '-';
+}
+
 // function to validate response token from google recaptcha v2.
 function validate_google_recaptcha($responseToken = null) {
 	if ($responseToken == null) return false;

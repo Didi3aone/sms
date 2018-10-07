@@ -53,11 +53,11 @@
                         </div>
                     </div>
                 </div>
-                <p>
+                <!-- <p>
                     <strong>Informasi : </strong><br/>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Untuk mengurangi failed dalam pengiriman sms mohon untuk <br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pengisian no HP diawali dengan +62
-                </p>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pengisian no HP diawali dengan 62
+                </p> -->
             </article>
         </div>
 

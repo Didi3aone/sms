@@ -58,6 +58,11 @@ class Admin extends MX_Controller  {
     public function create () {
         $this->_breadcrumb .= '<li><a href="'.site_url('admin').'">Admin</a></li>';
 
+        $this->load->model('Dynamic_model');
+
+        $data['role'] = $this->Dynamic_model->set_model("tbl_user_role","tur","RoleId")->get_all_data(array(
+            "conditions" => array("tur.RoleId NOT IN('1')" => NULL)
+        ))['datas'];
         //prepare header title.
         $header = array(
             "title"         => $this->_title,
@@ -72,7 +77,7 @@ class Admin extends MX_Controller  {
 
 		//load the view.
 		$this->load->view(MANAGER_HEADER, $header);
-        $this->load->view($this->_view_folder . 'create');
+        $this->load->view($this->_view_folder . 'create',$data);
 		$this->load->view(MANAGER_FOOTER, $footer);
     }
 
@@ -477,7 +482,7 @@ class Admin extends MX_Controller  {
         $email          = $this->input->post('email');
         $password       = $this->input->post('password');
         $new_password   = $this->input->post('new_password');
-        // $admin_type     = $this->input->post('admin_type');
+        $admin_type     = $this->input->post('admin_type');
 
         //server side validation.
         $this->_set_rule_validation($id);
@@ -495,16 +500,17 @@ class Admin extends MX_Controller  {
 
             //validation success, prepare array to DB.
             $arrayToDB = array(
-                'user_name'       => $name,
-                'user_full_name'  => $username,
+                'user_name'       => $username,
+                'user_full_name'  => $name,
                 'user_email'      => $email,
-                //'user_role_id'    => $admin_type
+                'user_role_id'    => $admin_type
             );
 
             //insert or update?
             if ($id == "") {
                 $arrayToDB['user_password']     = sha1($password);
                 $arrayToDB['user_created_date'] = date("Y-m-d H:i:s");
+                // pr($this->input->post());exit;
                 //insert to DB.
                 $result = $this->Admin_model->insert($arrayToDB);
 

@@ -136,6 +136,9 @@ define("IS_LOGIN_ADMIN","IS_LOGIN_ADMIN");
 define("STATUS_ALL",-1);
 define("STATUS_DELETE",0);
 define("STATUS_ACTIVE",1);
+define("STATUS_UNREAD",0);
+define("STATUS_READ",1);
+define("STATUS_CLOSE", 0);
 
 //-- Manager breadcrumbs
 define("MANAGER_HOME", "/mssb");

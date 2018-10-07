@@ -61,7 +61,7 @@
                     for (var i = 0; i < jsonData.datas.length; i++) {
                         var counter = jsonData.datas[i];
                         console.log(counter.template_content);
-                        $("textarea[name='isi']").val(counter.template_content);
+                        $("textarea[name='content']").val(counter.template_content);
                     }
                 }
             },error: function ( error ) {
@@ -73,13 +73,49 @@
     }
 
     $(document).ready(function() {     
-        $('#forumPost').summernote({
-            height : 180,
-            focus : false,
-            tabsize : 2
-        });
-        //init
-        create();
+
+        var url = "<?= site_url('sms/process_form_replay'); ?>";
+        var data = $("form");
+
+        $("#btnsub").click(function(e){
+            e.preventDefault(); 
+            $.ajax({
+                url: url,
+                type:'post',
+                data: data.serialize(),
+                dataType: 'json',
+                success: function( response ){
+                    // alert();
+                    console.log(response);
+                    if( response['is_error'] == false) {
+                        $.smallBox({
+                            title: '<strong>' + response['notif_title'] + '</strong>',
+                            content: response['notif_message'],
+                            color: "#659265",
+                            iconSmall: "fa fa-check fa-2x fadeInRight animated",
+                            timeout: 1000
+                        }, function() {
+                            //triger form submit success
+                            location.reload();
+                            // $(document).trigger("form-submit:success", [form_id,data]);
+
+                            // if (data['redirect_to'] == "") {
+                            //     $(form)[0].reset();
+                            //     $(form).find("button").attr('disabled', false);
+
+                            //     //triger form submit no redirection
+                            //     $(document).trigger("form-submit:noredirect", [form_id,data]);
+                            // } else {
+                            //     // go(data['redirect_to']);
+                            // }
+                        });
+                    }
+                },error:function(xhr){
+                    alert("Internal server error !!!" + xhr);
+                    return false;
+                }
+            });
+        })
 
         $('#template').change(function() {
             var id  = $("#template").val();
@@ -87,7 +123,7 @@
             if ( id )
                 get_template(id);
             else 
-                $("#message").val('');
+                $("textarea[name='content']").val('');
         });
     });
 </script>

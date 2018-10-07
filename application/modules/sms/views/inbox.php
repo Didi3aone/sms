@@ -19,7 +19,7 @@
 
 					<header>
 						<span class="widget-icon"> <i class="fa fa-table"></i> </span>
-						<h2>SMS Group List</h2>
+						<h2>SMS Inbox List</h2>
 					</header>
 
 					<!-- widget div-->

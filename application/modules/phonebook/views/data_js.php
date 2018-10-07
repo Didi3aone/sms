@@ -17,11 +17,12 @@
 		        	return '<input type="checkbox" onclick="handleClick(this)" name="id" id="select-all" value="' +full.UserDataId +'">';
 	            }
 	        },
-	        {"data": "UserDataId" },
-	        {"data": "UserDataName" },
-	        {"data": "UserMobilePhone"},
-	        {"data": "PENGALAMAN"},
-	        {"data": "SERTIFIKAT"},
+	        {"data": "Emp_Id" },
+	        {"data": "Emp_Name" },
+	        {"data": "Emp_PhoneNumber"},
+	        {"data": "region_name"},
+	        {"data": "kategori_name"},
+	        {"data": "Emp_LastEducation"},
 	        {
 	            "title": "Action",
 	            "class": "text-center",
@@ -29,9 +30,9 @@
 	            "sortable": false,
 	            "render": function(data, type, full) {
 	                var edit =  '<td>';
-	                    // edit +=  ' <a href="' + url + full.data_id + '" class="btn btn-info btn-circle" rel="tooltip" title="View Group" data-placement="top" ><i class="fa fa-eye"></i></a>';
-	                    edit +=  ' <a href="'+ url +"edit/"+ full.UserDataId + '" class="btn btn-primary btn-circle" rel="tooltip" title="Edit Group" data-placement="top" ><i class="fa fa-pencil"></i></a>' +
-	                             ' <a href="'+ url +'delete" data-id ="' + full.UserDataId + '" data-name ="' + full.UserDataName + '" class="btn btn-danger btn-circle delete-confirm" rel="tooltip" title="Delete Group" data-placement="top" ><i class="fa fa-trash-o"></i></a>';
+	                    edit +=  ' <a href="' + url + "view/" +full.Emp_Id + '" class="btn btn-info btn-circle" rel="tooltip" title="View Employee" data-placement="top" ><i class="fa fa-eye"></i></a>';
+	                    edit +=  ' <a href="'+ url +"edit/"+ full.Emp_Id + '" class="btn btn-primary btn-circle" rel="tooltip" title="Edit Employee" data-placement="top" ><i class="fa fa-pencil"></i></a>' +
+	                             ' <a href="'+ url +'delete" data-id ="' + full.Emp_Id + '" data-name ="' + full.Emp_Name + '" class="btn btn-danger btn-circle delete-confirm" rel="tooltip" title="Delete Employee" data-placement="top" ><i class="fa fa-trash-o"></i></a>';
 	                    edit +=  '</td>';
 
 	                return edit;

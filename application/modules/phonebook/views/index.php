@@ -66,7 +66,34 @@
                                             </div>
                                         </th>
 
-                                        <th style="width:60px">
+                                        <th class="hasinput">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input type="text" id="email_filter" name="filter[area]" class="form-control filter-this" placeholder="Area" />
+                                                    <div class="input-group-btn"><button type="button" class="clear-filter btn"><i class="fa fa-close"></i></button></div>
+                                                </div>
+                                            </div>
+                                        </th>
+
+                                        <th class="hasinput">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input type="text" id="email_filter" name="filter[kategori]" class="form-control filter-this" placeholder="Kategori" />
+                                                    <div class="input-group-btn"><button type="button" class="clear-filter btn"><i class="fa fa-close"></i></button></div>
+                                                </div>
+                                            </div>
+                                        </th>
+
+                                        <th class="hasinput">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input type="text" id="email_filter" name="filter[last]" class="form-control filter-this" placeholder="Last Education" />
+                                                    <div class="input-group-btn"><button type="button" class="clear-filter btn"><i class="fa fa-close"></i></button></div>
+                                                </div>
+                                            </div>
+                                        </th>
+
+                                        <!-- <th style="width:60px">
                                             <div class="btn-group btn-group-sm" data-toggle="buttons">
                                                 <label class="btn btn-default btn-sm active">
                                                     <input type="radio" class="filter-this" name="filter[pengalaman]" value="YES" autocomplete="off" checked> Y
@@ -86,7 +113,7 @@
                                                     <input type="radio" class="filter-this" name="filter[sertifikat]" value="NO" autocomplete="off"> N
                                                 </label>
                                             </div>
-                                        </th>
+                                        </th> -->
 
                                         <th style="width:100px"></th>
                                     </tr>
@@ -97,9 +124,10 @@
 										</th>
                                         <th data-hide="phone,tablet">Data ID</th>
                                         <th data-class="expand"> Name</th>
-                                        <th data-hide="phone"> Number phone</th>
-                                        <th data-hide="phone"> Pengalaman</th>
-                                        <th data-class="expand"> Sertifikat</th>
+                                        <th data-hide="phone"> Phone Number </th>
+                                        <th data-hide="phone"> Area</th>
+                                        <th data-hide="phone"> Kategori</th>
+                                        <th data-class="expand"> Last Education</th>
                                         <th> Action</th>
                                     </tr>
                                 </thead>

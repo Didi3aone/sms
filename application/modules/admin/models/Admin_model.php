@@ -192,13 +192,6 @@ class Admin_model extends CI_Model {
     {
         (isset($extra_param["is_batch"])) ? $is_batch = $extra_param["is_batch"] : $is_batch = false;
 
-        if (isset($datas['user_password'])) {
-            $options = [
-                'cost' => 8,
-            ];
-            $datas['user_password'] = password_hash($datas['user_password'], PASSWORD_BCRYPT, $options);
-        }
-
         if (!$is_batch) {
 
             $this->db->insert($this->_table, $datas);
@@ -219,12 +212,6 @@ class Admin_model extends CI_Model {
      */
     public function update($datas, $condition, $extra_param = array())
     {
-        if (isset($datas['user_password'])) {
-            $options = [
-                'cost' => 8,
-            ];
-            $datas['user_password'] = password_hash($datas['user_password'], PASSWORD_BCRYPT, $options);
-        }
 
         $update = $this->db->update($this->_table, $datas, $condition);
         return $update;
@@ -256,8 +243,11 @@ class Admin_model extends CI_Model {
     public function check_login($user , $pass) 
     {
        //get data by username.
-        $this->db->where("user_name" , $user);
-        $this->db->where("user_password", $pass);
+        $this->db->select("tur.*, tu.*");
+        $this->db->from("tbl_user tu");
+        $this->db->join("tbl_user_role tur", "tur.RoleId = tu.user_role_id");
+        $this->db->where("tu.user_name" , $user);
+        $this->db->where("tu.user_password", $pass);
 
         $user = $this->db->get($this->_table)->row_array();
         return $user;

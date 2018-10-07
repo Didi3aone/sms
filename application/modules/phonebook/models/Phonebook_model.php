@@ -3,9 +3,9 @@
 
 class Phonebook_model extends CI_Model {
 
-    protected $_table = 'mst_data_user';
-    protected $_table_alias = 'mdu';
-    protected $_pk_field = 'UserDataId';
+    protected $_table = 'mst_employee';
+    protected $_table_alias = 'me';
+    protected $_pk_field = 'Emp_Id';
 
     public function __construct() {
         parent::__construct();
@@ -38,19 +38,19 @@ class Phonebook_model extends CI_Model {
         (isset($params["debug"])) ? $debug = $params["debug"] : $debug = false;
         (isset($params["distinct"])) ? $distinct = $params["distinct"] : $distinct = false;
         //only this project
-        (isset($params["pengalaman"])) ? $pengalaman = $params["pengalaman"] : $pengalaman = 1;
-        (isset($params["sertifikat"])) ? $sertifikat = $params["sertifikat"] : $sertifikat = 1;
+        // (isset($params["pengalaman"])) ? $pengalaman = $params["pengalaman"] : $pengalaman = 1;
+        // (isset($params["sertifikat"])) ? $sertifikat = $params["sertifikat"] : $sertifikat = 1;
         //end
 
         $this->db->select($select);
 
-        if ($pengalaman != "") {
-            $this->db->where($this->_table_alias.".UserExperience", $pengalaman);
-        }
+        // if ($pengalaman != "") {
+        //     $this->db->where($this->_table_alias.".UserExperience", $pengalaman);
+        // }
 
-        if ($sertifikat != "") {
-            $this->db->where($this->_table_alias.".UserCertificate",$sertifikat);
-        } 
+        // if ($sertifikat != "") {
+        //     $this->db->where($this->_table_alias.".UserCertificate",$sertifikat);
+        // } 
         //for search for PK "id" as array.
         if (count($findByPK) > 0) {
             $this->db->where_in($this->_pk_field, $findByPK);
@@ -204,16 +204,13 @@ class Phonebook_model extends CI_Model {
     /**
      * function delete
      */
-    public function delete($condition, $extra_param = array())
+    public function delete($datas,$condition, $extra_param = array())
     {
         //default values.
         (isset($extra_param["is_permanent"])) ? $is_permanent = $extra_param["is_permanent"] : $is_permanent = false;
 
         if (!$is_permanent) {
             //delete just change status.
-            $datas = array(
-                'is_active' => STATUS_DELETE,
-            );
             return $this->db->update($this->_table, $datas, $condition);
         } else {
             //delete will delete row permanently.

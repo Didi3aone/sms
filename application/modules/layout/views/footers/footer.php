@@ -11,7 +11,7 @@
         <div class="page-footer">
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                    <span class="txt-color-white">MSSB <a href="<?= site_url('change-log'); ?>" target="_blank" style="color: white;" title="show change log">V <?= $log['log_curr_version'];?></a> <span class="hidden-xs"></span> © 2018</span>
+                    <span class="txt-color-white">MSSB <a href="<?php echo site_url('change-log'); ?>" target="_blank" style="color: white;" title="show change log">V <?php echo $log['log_curr_version'];?></a> <span class="hidden-xs"></span> © 2018</span>
                 </div>
             </div>
         </div>
@@ -55,7 +55,6 @@
         <script src="<?= base_url(); ?>assets/js/plugins/jquery.form.min.js"></script>
         <script src="<?= base_url(); ?>assets/js/plugins/jquery.validate.min.js"></script>
         <script src="<?= base_url(); ?>assets/js/plugins/validate-extension.js"></script>
-        <!-- <script src="<?php //base_url(); ?>assets/js/plugins/speech/voicecommand.min.js"></script> -->
         <!-- daterange picker -->
         <script src="<?= base_url(); ?>assets/js/smart-chat-ui/smart.chat.ui.min.js"></script>
         <script src="<?= base_url(); ?>assets/js/smart-chat-ui/smart.chat.manager.min.js"></script>
@@ -100,17 +99,76 @@
         }
        
         ?>
-        <?php 
-            function get_data() {
-                $sql = "SELECT * FROM inbox i WHERE i.IsRead = 0";
-                $qry = $this->db->query($sql);
-                $res = $qry->result_array();
-
-                echo json_encode($res);
-            }
-        ?>
         <script>
-            
+           var lastResponse = ''
+           $(document).ready(function() {
+                var d = new Date();
+                var n = d.getTime();
+                var urls = "<?php echo site_url('dashboard/counts_all'); ?>"+'?'+n;
+                var url_sms = "<?php echo site_url('dashboard/count_sms'); ?>"+'?'+n;
+                var url_notif = "<?php echo site_url('dashboard/count_notif'); ?>"+'?'+n;
+                var url_chat = "<?php echo site_url('messenger/get_new_chat'); ?>"+'?'+n;
+                
+                setInterval(function() {
+                    $("#total").load(urls);
+                }, 2000);
+
+                 setInterval(function() {
+                    $("#total_sms").load(url_sms);
+                    console.log(url_sms);
+                }, 2500);
+
+                setInterval(function() {
+                    $("#total_chat").load(url_notif);
+                }, 2500);
+
+                setInterval(function() {
+                   $("#message").load(url_chat);
+                }, 2000);
+           });
+
+           $(document).on("click", ".klik", function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                // var url = $(this).attr("href");
+                var data_id = $(this).data("id");
+                var data_name = $(this).data("name");
+                var url = "<?= site_url('messenger/update_flag') ?>";
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    cache: false,
+                    data: {
+                        id: data_id
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log(data);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+
+            });
+
+        </script>
+
+        <!-- Your GOOGLE ANALYTICS CODE Below -->
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-XXXXXXXX-X']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+                var ga = document.createElement('script');
+                ga.type = 'text/javascript';
+                ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(ga, s);
+            })();
+
         </script>
 
     </body>

@@ -77,7 +77,7 @@
 										<label class="select">
 											<select name="template_id" id="template" class="input-sm template">
 												<option value="0"> -- Choose --</option>
-												<?php foreach ($datas as $key => $value): ?>
+												<?php foreach ($template as $key => $value): ?>
 													<option value="<?= $value['template_id'] ?>"> <?= $value['template_name']?> </option>
 												<?php endforeach ?>
 											</select> <i></i>

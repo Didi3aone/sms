@@ -74,7 +74,7 @@
 	<!-- widget content -->
 	<!-- <article class="col-sm-12 col-md-12 col-lg-6"> -->
 		<!-- Widget ID (each widget will need unique ID)-->
-		<div class="jarviswidget jarviswidget-color-greenDark" id="wid-id-2" data-widget-editbutton="false">
+		<!-- <div class="jarviswidget jarviswidget-color-greenDark" id="wid-id-2" data-widget-editbutton="false">
 			<div>
 				<div class="col-xs-6">
 					<div class="widget-body no-padding">
@@ -100,17 +100,17 @@
 								</thead>
 								<tbody>
 									<?php
-										$no = 1;
-										foreach($data as $key => $value) :
+										// $no = 1;
+										// foreach($data as $key => $value) :
 									?>
 									<tr class="success">
-										<td><?= $no++; ?></td>
-										<td><?= $value['Client'] ?></td>
-										<td><?= $value['NetName'] ?></td>
-										<td><?= $value['IMEI'] ?></td>
+										<td><?php //$no++; ?></td>
+										<td><?php// $value['Client'] ?></td>
+										<td><?php// $value['NetName'] ?></td>
+										<td><?php// $value['IMEI'] ?></td>
 										<td>WAVECOME FASTRACK</td>
 									</tr>
-									<?php endforeach;?>
+									<?php //endforeach;?>
 								</tbody>
 							</table>
 
@@ -118,7 +118,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 	<!-- </article> -->
 	<!-- end widget content -->
 </div>

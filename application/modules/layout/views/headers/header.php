@@ -44,32 +44,60 @@
 		<header id="header">
 			<div id="logo-group">
 				<!-- PLACE YOUR LOGO HERE -->
-				<span id="logo" style="color: white;"> MSSB</span>
-				<!-- <span id="logo"> <img src="<?php ?>assets/logo/avian-brands.png" alt="Logo"> </span> -->
+				<!-- <span id="logo" style="color: white;"> MSSB</span> -->
+				<span id="logo"> <img src="<?php echo base_url(); ?>assets/logo/sudarta.png" alt="Logo"> </span>
 				<!-- END LOGO PLACEHOLDER -->
 				<?php
-					$this->load->model('Dynamic_model');
-					$notif_inbox  = $this->Dynamic_model->set_model("inbox","in","ID")->get_all_data(
-			            array(
-			                "status"            => -1,
-			                "count_all_first"   => true,
-			                "conditions"		=> array("IsRead" => 0),
-			                "debug"				=> false,
-			                "orderby"			=> array("ID" => "desc")
-			            )
-			        );
+					// $this->load->model('Dynamic_model');
+					// $notif_inbox  = $this->Dynamic_model->set_model("inbox","in","ID")->get_all_data(
+			  //           array(
+			  //               "status"            => -1,
+			  //               "count_all_first"   => true,
+			  //               "conditions"		=> array("IsRead" => 0),
+			  //               "debug"				=> false,
+			  //               "orderby"			=> array("ID" => "desc")
+			  //           )
+			  //       );
+					// $sess = $this->session->userdata("user_id");
+			  //       $notif = $this->Dynamic_model->set_model("tbl_chat","tc","ChatId")->get_all_data(
+			  //           array(
+			  //               "status"            => -1,
+			  //               "count_all_first"   => true,
+			  //               "conditions"		=> array("ChatToId" => $sess,"ChatIsRead" => STATUS_UNREAD),
+			  //               "debug"				=> false,
+			  //               "orderby"			=> array("ChatId" => "desc")
+			  //           )
+			  //       );
+
+			  //       $total = ($notif_inbox['total']) + ($notif['total']);
 			        // $date = $notif_inbox['datas'][0]['ReceivingDateTime'];
 				?>
-				<span id="activity" class="activity-dropdown"> <i class="fa fa-envelope"></i> <b class="badge"> <?= $notif_inbox['total']; ?> </b> </span>
+				<!-- <div id="message">
+					
+				</div> -->
+
+				<span id="activity" class="activity-dropdown"> <i class="fa fa-bell"></i> 
+					<b class="badge" id="total"> </b> 
+				</span>
 
 				<!-- AJAX-DROPDOWN : control this dropdown height, look and feel from the LESS variable file -->
 				<div class="ajax-dropdown">
-
+ 
 					<!-- the ID links are fetched via AJAX to the ajax container "ajax-notifications" -->
 					<div class="btn-group btn-group-justified" data-toggle="buttons">
+						<?php 
+							$level = $this->session->userdata("level");
+
+							if($level == '3' || $level == '1') :
+						?>
 						<label class="btn btn-default">
 							<input type="radio" name="activity" id="<?= site_url('dashboard/notif'); ?>">
-							Msgs (<?= $notif_inbox['total'] ?>) </label>
+							SMS (<b id="total_sms"></b>) </label>
+						<?php else: ?>
+						<label class="btn btn-default">
+							<input type="radio" name="activity" id="<?= site_url('messenger/notif'); ?>">
+							Notifikasi (<b id="total_chat"></b>) </label>
+						<?php endif;?>
 					</div>
 
 					<!-- notification content -->
@@ -163,6 +191,16 @@
 				-->
 
 				<ul>
+					<li class="dashboard">
+						<a href="<?= site_url(); ?>"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Dashboard</span></a>
+					</li>
+					<?php 
+						$level 		= $this->session->userdata("level");
+						$level_name = $this->session->userdata("level_name");
+					?>
+					<?php 
+						if( $level == "3" || $level_name == "OPERATOR") :
+					?>
                     <!-- Dashboard and Statuses -->
 					<li class="dashboard">
 						<a href="<?= site_url(); ?>"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Dashboard</span></a>
@@ -186,10 +224,10 @@
                                         <a href="<?= site_url('sms/create_group'); ?>">
                                         	Broadcast to group</a>
                                     </li>
-                                    <li class="<?= (isset($active_page) && $active_page == "SMS-CREATE-SCHEDULE") ? "active" :"" ?>">
-                                        <a href="<?= site_url('sms/create_schedule'); ?>">
+                                    <!-- <li class="<?php ?>
+                                        <a href="<?php// site_url('sms/create_schedule'); ?>">
                                         	 SMS Schedule <b>(BETTA)</b></a>
-                                    </li>
+                                    </li> -->
 								</ul>
 							</li>
                             <li class="<?= (isset($active_page) && $active_page == "SMS-INBOX") ? "active" :"" ?>">
@@ -202,7 +240,28 @@
 								<a href="<?= site_url("sms/sent"); ?>" title="Sent"><span class="menu-item-parent"><i class="fa fa-lg fa-fw fa-check-square"></i> Sent</span></a>
 							</li>
 						</ul>
-					</li>
+
+						<li class="">
+							<a href="#"><i class="fa fa-lg fa-fw fa-upload"></i> <span class="menu-item-parent">Upload Data</span></a>
+	                        <ul>
+								<li class="<?= (isset($active_page) && $active_page == "import") ? "active" : ""; ?>">
+									<a href="<?= site_url('upload/import');?>" title="Upload Data"><span class="menu-item-parent">Upload File</span></a>
+								</li>
+							</ul>
+						</li>
+
+						<li class="">
+							<a href="#"><i class="fa fa-lg fa-fw fa-address-book"></i> <span class="menu-item-parent">Phonebook</span></a>
+	                        <ul>
+								<li class="<?= (isset($active_page) && $active_page == "Phonebook-list") ? "active" : ""; ?>">
+									<a href="<?= site_url('phonebook');?>" title="List Phonebook"><span class="menu-item-parent">List</span></a>
+								</li>
+								<li class="<?= (isset($active_page) && $active_page == "Phonebook-create") ? "active" : ""; ?>">
+									<a href="<?= site_url('phonebook/create'); ?>" title="Create Phonebook"><span class="menu-item-parent">Create</span></a>
+								</li>
+							</ul>
+						</li>
+					<?php elseif($level == "2" || $level_name == "INPSPECTOR") :?>
                     <!-- Admin Module -->
                     <li class="">
 						<a href="#"><i class="fa fa-lg fa-fw fa-envelope-square"></i> <span class="menu-item-parent">Template SMS</span></a>
@@ -212,6 +271,38 @@
 							</li>
 							<li class="<?= (isset($active_page) && $active_page == "template-create") ? "active" : ""?>">
 								<a href="<?= site_url('template/create'); ?>" title="Create Template"><span class="menu-item-parent">Create Template</span></a>
+							</li>
+						</ul>
+					</li>
+
+					<li class="">
+						<a href="#"><i class="fa fa-lg fa-fw fa-comment"></i> <span class="menu-item-parent">Messenger</span></a>
+                        <ul>
+							<li class="<?= (isset($active_page) && $active_page == "messenger") ? "active" : ""; ?>">
+								<a href="<?= site_url('messenger');?>" title="messenger"><span class="menu-item-parent">Send Message</span></a>
+							</li>
+						</ul>
+					</li>
+					<?php else : ?>
+					<li class="">
+						<a href="#"><i class="fa fa-lg fa-fw fa-envelope"></i> <span class="menu-item-parent">SMS</span></a>
+                        <ul>
+							<li class="<?= (isset($active_page) && $active_page == "SMS-CREATE") ? "active" :"" ?>">
+								<a href="#" title="Create SMS"><span class="menu-item-parent"><i class="fa fa-lg fa-fw fa-pencil"></i> Create</span></a>
+								<ul>
+									<li class="<?= (isset($active_page) && $active_page == "SMS-CREATE-PERSONAL") ? "active" :"" ?>">
+										<a href="<?= site_url('sms/create_personal'); ?>">
+                                        Personal</a>
+                                    </li>
+									<li class="<?= (isset($active_page) && $active_page == "SMS-CREATE_GROUP") ? "active" :"" ?>">
+                                        <a href="<?= site_url('sms/create_group'); ?>">
+                                        	Broadcast to group</a>
+                                    </li>
+                                    <!-- <li class="<?php ?>
+                                        <a href="<?php// site_url('sms/create_schedule'); ?>">
+                                        	 SMS Schedule <b>(BETTA)</b></a>
+                                    </li> -->
+								</ul>
 							</li>
 						</ul>
 					</li>
@@ -228,9 +319,21 @@
 					</li>
 
 					<li class="">
+						<a href="#"><i class="fa fa-lg fa-fw fa-envelope-square"></i> <span class="menu-item-parent">Template SMS</span></a>
+                        <ul>
+							<li class="<?= (isset($active_page) && $active_page == "template-list") ? "active" : ""; ?>">
+								<a href="<?= site_url('template'); ?>" title="List Template"><span class="menu-item-parent">List Template</span></a>
+							</li>
+							<li class="<?= (isset($active_page) && $active_page == "template-create") ? "active" : ""?>">
+								<a href="<?= site_url('template/create'); ?>" title="Create Template"><span class="menu-item-parent">Create Template</span></a>
+							</li>
+						</ul>
+					</li>
+
+					<li class="">
 						<a href="#"><i class="fa fa-lg fa-fw fa-folder-open"></i> <span class="menu-item-parent">Kategori</span></a>
                         <ul>
-							<li class="<?= (isset($active_page) && $active_page == "kategori-list") ? "active" : ""; ?>">
+							<li class="<?= (isset($active_page) && $active_page == "kategori") ? "active" : ""; ?>">
 								<a href="<?= site_url('kategori');?>" title="List Kategori"><span class="menu-item-parent">List Kategori</span></a>
 							</li>
 							<li class="<?= (isset($active_page) && $active_page == "kategori-create") ? "active" : ""; ?>">
@@ -254,8 +357,8 @@
 					<li class="">
 						<a href="#"><i class="fa fa-lg fa-fw fa-comment"></i> <span class="menu-item-parent">Messenger</span></a>
                         <ul>
-							<li class="<?= (isset($active_page) && $active_page == "Phonebook-list") ? "active" : ""; ?>">
-								<a href="<?= site_url('mess');?>" title="List Phonebook"><span class="menu-item-parent">Send Message</span></a>
+							<li class="<?= (isset($active_page) && $active_page == "messenger") ? "active" : ""; ?>">
+								<a href="<?= site_url('messenger');?>" title="messenger"><span class="menu-item-parent">Send Message</span></a>
 							</li>
 						</ul>
 					</li>
@@ -276,6 +379,7 @@
 							</li>
 						</ul>
 					</li>
+					<?php endif;?>
 				</ul>
 			</nav>
 
@@ -296,6 +400,20 @@
 					</span>
 				</span>
 
+				<div id="message">
+					
+				</div>
+				<!-- <div class="pull-right" id="alerts" style="display: none; margin-right: 10px; margin-top: 10px;">
+		            <div class="alert alert-success">
+		                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+		                    ×</button>&nbsp;
+		               <span class="glyphicon glyphicon-bell"></span <strong>Information &nbsp;</strong>
+		                <hr class="message-inner-separator">
+		                <p id="message">
+		                  You successfully read this important alert message.</p>
+		            </div>
+		        </div> -->
+
 				<!-- breadcrumb -->
 				<ol class="breadcrumb">
 					<?= isset($breadcrumb) ? $breadcrumb : "" ?>
@@ -312,6 +430,5 @@
 				<span id="add" class="btn btn-ribbon hidden-xs" data-title="add"><i class="fa-plus"></i> Add</span>
 				<span id="search" class="btn btn-ribbon" data-title="search"><i class="fa-search"></i> <span class="hidden-mobile">Search</span></span>
 				</span> -->
-
 			</div>
 			<!-- END RIBBON -->

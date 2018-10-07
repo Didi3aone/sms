@@ -298,7 +298,7 @@ class Template extends CI_Controller {
                     $message['notif_message'] = "New Template has been added.";
 
                     //on insert, not redirected.
-                    $message['redirect_to'] = site_url("Template");
+                    $message['redirect_to'] = site_url("template");
                 }
 
             } else {

@@ -6,7 +6,7 @@
 	    var url = "<?= site_url('sms/'); ?>";
 	    var columns = [
 	        // {"data": "ID" },
-	        {"data": "SenderNumber" },
+	        {"data": "SenderNumbers" },
 	        {"data": "ReceivingDateTime"},
 	        {"data": "TextDecoded" },
 	        {"data": "statusSms"},
@@ -19,7 +19,7 @@
 	            	var str_edit = full.SenderNumber;
 	            	var str_rep  = str_edit.replace('+','/');
 	                var edit =  '<td>';
-	                    edit +=  ' <a href="' + url +"view-inbox/"+ full.ID + '" class="btn btn-info btn-circle" rel="tooltip" title="View Message" data-placement="top" ><i class="fa fa-eye"></i></a>';
+	                    // edit +=  ' <a href="' + url +"view-inbox/"+ full.ID + '" class="btn btn-info btn-circle" rel="tooltip" title="View Message" data-placement="top" ><i class="fa fa-eye"></i></a>';
 
 	                    edit +=  ' <a href="'+ url + "replay" + str_rep + '" class="btn btn-primary btn-circle" rel="tooltip" title="Replay Message" data-placement="top" ><i class="fa fa-check"></i></a>' +
 	                             ' <a href="'+ url +'delete_inbox" data-id ="' + full.ID + '" data-name ="' + full.SenderNumber + '" class="btn btn-danger btn-circle delete-confirm" rel="tooltip" title="Delete Message" data-placement="top" ><i class="fa fa-trash-o"></i></a>';
